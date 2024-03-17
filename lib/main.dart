@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notee/src/features/note/presentation/home_screen.dart';
 import 'package:notee/src/features/splash/presentation/splash_screen.dart';
 
 void main() {
   runApp( SplashScreen(onInitializationComplete: (){
-    runApp( const MyApp());
+    runApp( const ProviderScope(child: MyApp()));
   }));
 }
 
