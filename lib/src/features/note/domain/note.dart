@@ -3,10 +3,10 @@ part 'note.g.dart';
 
 @collection
 class Note {
-  Note({this.description, this.isTaskCompleted, this.time, this.title});
+  Note({required this.description, required this.isTaskCompleted, required this.time, required this.title});
   Id id = Isar.autoIncrement;
-  String? title;
-  String? description;
-  bool? isTaskCompleted;
-  DateTime? time;
+  final String title;
+  final String description;
+  bool isTaskCompleted = false;
+  final DateTime time;
 }

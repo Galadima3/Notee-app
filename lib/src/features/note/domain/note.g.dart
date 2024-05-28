@@ -58,18 +58,8 @@ int _noteEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.description;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.title;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.description.length * 3;
+  bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
 
@@ -92,10 +82,10 @@ Note _noteDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Note(
-    description: reader.readStringOrNull(offsets[0]),
-    isTaskCompleted: reader.readBoolOrNull(offsets[1]),
-    time: reader.readDateTimeOrNull(offsets[2]),
-    title: reader.readStringOrNull(offsets[3]),
+    description: reader.readString(offsets[0]),
+    isTaskCompleted: reader.readBool(offsets[1]),
+    time: reader.readDateTime(offsets[2]),
+    title: reader.readString(offsets[3]),
   );
   object.id = id;
   return object;
@@ -109,13 +99,13 @@ P _noteDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -209,24 +199,8 @@ extension NoteQueryWhere on QueryBuilder<Note, Note, QWhereClause> {
 }
 
 extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
-  QueryBuilder<Note, Note, QAfterFilterCondition> descriptionIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'description',
-      ));
-    });
-  }
-
-  QueryBuilder<Note, Note, QAfterFilterCondition> descriptionIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'description',
-      ));
-    });
-  }
-
   QueryBuilder<Note, Note, QAfterFilterCondition> descriptionEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -239,7 +213,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> descriptionGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -254,7 +228,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> descriptionLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -269,8 +243,8 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> descriptionBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -407,24 +381,8 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Note, Note, QAfterFilterCondition> isTaskCompletedIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isTaskCompleted',
-      ));
-    });
-  }
-
-  QueryBuilder<Note, Note, QAfterFilterCondition> isTaskCompletedIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isTaskCompleted',
-      ));
-    });
-  }
-
   QueryBuilder<Note, Note, QAfterFilterCondition> isTaskCompletedEqualTo(
-      bool? value) {
+      bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isTaskCompleted',
@@ -433,23 +391,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Note, Note, QAfterFilterCondition> timeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'time',
-      ));
-    });
-  }
-
-  QueryBuilder<Note, Note, QAfterFilterCondition> timeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'time',
-      ));
-    });
-  }
-
-  QueryBuilder<Note, Note, QAfterFilterCondition> timeEqualTo(DateTime? value) {
+  QueryBuilder<Note, Note, QAfterFilterCondition> timeEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'time',
@@ -459,7 +401,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> timeGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -472,7 +414,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> timeLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -485,8 +427,8 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> timeBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -501,24 +443,8 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Note, Note, QAfterFilterCondition> titleIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'title',
-      ));
-    });
-  }
-
-  QueryBuilder<Note, Note, QAfterFilterCondition> titleIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'title',
-      ));
-    });
-  }
-
   QueryBuilder<Note, Note, QAfterFilterCondition> titleEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -531,7 +457,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> titleGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -546,7 +472,7 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> titleLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -561,8 +487,8 @@ extension NoteQueryFilter on QueryBuilder<Note, Note, QFilterCondition> {
   }
 
   QueryBuilder<Note, Note, QAfterFilterCondition> titleBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -797,25 +723,25 @@ extension NoteQueryProperty on QueryBuilder<Note, Note, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Note, String?, QQueryOperations> descriptionProperty() {
+  QueryBuilder<Note, String, QQueryOperations> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'description');
     });
   }
 
-  QueryBuilder<Note, bool?, QQueryOperations> isTaskCompletedProperty() {
+  QueryBuilder<Note, bool, QQueryOperations> isTaskCompletedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isTaskCompleted');
     });
   }
 
-  QueryBuilder<Note, DateTime?, QQueryOperations> timeProperty() {
+  QueryBuilder<Note, DateTime, QQueryOperations> timeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'time');
     });
   }
 
-  QueryBuilder<Note, String?, QQueryOperations> titleProperty() {
+  QueryBuilder<Note, String, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'title');
     });

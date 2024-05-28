@@ -19,7 +19,8 @@ class TODOService {
   Future<List<Note>> getAllTODO() async {
     final isar = await db;
     //Find all users in the user collection and return the list.
-    return await isar.notes.where().findAll();
+    var rex = await isar.notes.where().findAll();
+    return rex;
   }
 
   //Update
@@ -33,10 +34,14 @@ class TODOService {
 
   //Delete
   //Delete a user from the Isar database based on user ID.
-  Future<void> deleteUser(int todoID) async {
+  Future<void> deleteTODO(int todoID) async {
     final isar = await db;
     //Perform a write transaction to delete the user with the specified ID.
-    isar.writeTxn(() => isar.notes.delete(todoID));
+    Future.delayed(const Duration(seconds: 3)).then(
+      (_) => isar.writeTxn(
+        () => isar.notes.delete(todoID),
+      ),
+    );
   }
 
   //Listen to changes in the user collection and yield a stream of user lists.
@@ -65,3 +70,9 @@ class TODOService {
 final todoServiceProvider = Provider<TODOService>((ref) {
   return TODOService();
 });
+
+final allNotesProvider = StreamProvider<List<Note>>((ref) async* {
+  final todosService = ref.read(todoServiceProvider);
+  yield* todosService.listenTODO();
+});
+

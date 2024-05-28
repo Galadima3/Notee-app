@@ -16,6 +16,30 @@ class _TaskInputDialogState extends State<TaskInputDialog> {
   late String _description;
   late DateTime _selectedTime;
 
+  void _saveTask(BuildContext context, WidgetRef ref) {
+    if (_task.isNotEmpty) {
+      // final Map<String, dynamic> taskData = {
+      //   'task': _task,
+      //   'description': _description,
+      //   'time': _selectedTime,
+      // };
+      final taskData = Note(
+          title: _task,
+          description: _description,
+          time: _selectedTime,
+          isTaskCompleted: false);
+      ref.read(todoServiceProvider).createTODO(taskData);
+      Navigator.pop(context, taskData);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a task.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,12 +71,12 @@ class _TaskInputDialogState extends State<TaskInputDialog> {
               });
             },
           ),
-          ListTile(
-            title: Text('Select Time: $_selectedTime'),
-            onTap: () {
-              _selectTime(context);
-            },
-          ),
+          // ListTile(
+          //   title: Text('Select Time: $_selectedTime'),
+          //   onTap: () {
+          //     _selectTime(context);
+          //   },
+          // ),
         ],
       ),
       actions: <Widget>[
@@ -73,6 +97,7 @@ class _TaskInputDialogState extends State<TaskInputDialog> {
       ],
     );
   }
+
 //TODO: fix the time button
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
@@ -90,30 +115,6 @@ class _TaskInputDialogState extends State<TaskInputDialog> {
         // Update _selectedTime to DateTime
         _selectedTime = selectedDateTime;
       });
-    }
-  }
-
-  void _saveTask(BuildContext context, WidgetRef ref) {
-    if (_task.isNotEmpty) {
-      // final Map<String, dynamic> taskData = {
-      //   'task': _task,
-      //   'description': _description,
-      //   'time': _selectedTime,
-      // };
-      final taskData = Note(
-          title: _task,
-          description: _description,
-          time: _selectedTime as DateTime,
-          isTaskCompleted: true);
-      ref.read(todoServiceProvider).createTODO(taskData);
-      Navigator.pop(context, taskData);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a task.'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 }
