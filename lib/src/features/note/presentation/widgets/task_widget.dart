@@ -22,6 +22,8 @@ class _TaskWidgetState extends State<TaskWidget> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
+        minTileHeight: 70,
+        
         tileColor: Colors.grey.shade200,
         
         title: Text(
@@ -32,6 +34,7 @@ class _TaskWidgetState extends State<TaskWidget> {
         ),
         subtitle: Text(
           widget.taskDescription,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );

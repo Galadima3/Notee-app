@@ -27,6 +27,6 @@ class Task {
       description: description ?? this.description,
       isTaskCompleted: isTaskCompleted ?? this.isTaskCompleted,
       time: time ?? this.time,
-    )..id = this.id; // Ensure the id is copied over
+    )..id = id; // Ensure the id is copied over
   }
 }

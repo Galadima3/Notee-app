@@ -97,8 +97,7 @@ class _TaskInputDialogState extends State<TaskInputDialog> {
       ],
     );
   }
-
-//TODO: fix the time button
+  // ignore: unused_element
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,

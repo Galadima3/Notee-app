@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:notee/src/features/note/data/note_service.dart';
 import 'package:notee/src/features/note/domain/task.dart';
 
@@ -43,15 +42,22 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
+              decoration: InputDecoration(
+                hintText: 'Title',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
+              maxLines: 4,
               controller: bodyController,
-              decoration: const InputDecoration(
-                labelText: 'Body',
+             decoration: InputDecoration(
+                hintText: 'Body',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 16),
