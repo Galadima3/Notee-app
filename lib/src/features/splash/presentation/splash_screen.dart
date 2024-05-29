@@ -29,15 +29,15 @@ class _SplashScreenState extends State<SplashScreen> {
       home: Scaffold(
         body: Center(
           child: SizedBox(
-            height: 220,
-            width: 220,
+            height: 230,
+            width: 230,
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset('assets/images/logo.svg', height: 175, width: 175,),
-                  const Text('Notee', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                  const Text('Notee', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),),
                 ],
               ),
             ),

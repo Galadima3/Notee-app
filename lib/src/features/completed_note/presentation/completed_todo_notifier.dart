@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:notee/src/features/note/domain/note.dart';
+import 'package:notee/src/features/note/domain/task.dart';
 
-class CompletedTodoStateNotifier extends StateNotifier<List<Note>> {
+class CompletedTodoStateNotifier extends StateNotifier<List<Task>> {
   CompletedTodoStateNotifier() : super([]);
 
-  void addCompletedTask(Note task) {
+  void addCompletedTask(Task task) {
     state = [...state, task];
   }
 
-  void removeCompletedTask(Note task) async {
+  void removeCompletedTask(Task task) async {
     await Future.delayed(const Duration(milliseconds: 1750)).then(
       (value) {
         state = state.where((element) => element != task).toList();
@@ -21,7 +21,7 @@ class CompletedTodoStateNotifier extends StateNotifier<List<Note>> {
     state = [];
   }
 
-  void toggleTaskStatus(Note task) {
+  void toggleTaskStatus(Task task) {
     if (state.contains(task)) {
       state = state.where((element) => element != task).toList();
     } else {
@@ -31,6 +31,6 @@ class CompletedTodoStateNotifier extends StateNotifier<List<Note>> {
 }
 
 final todoStateNotifierProvider =
-    StateNotifierProvider<CompletedTodoStateNotifier, List<Note>>((ref) {
+    StateNotifierProvider<CompletedTodoStateNotifier, List<Task>>((ref) {
   return CompletedTodoStateNotifier();
 });

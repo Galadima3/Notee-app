@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:notee/src/features/completed_note/presentation/completed_todo_notifier.dart';
 import 'package:notee/src/features/completed_note/presentation/completed_todos_screen.dart';
 import 'package:notee/src/features/note/data/note_service.dart';
+import 'package:notee/src/features/note/domain/task.dart';
+import 'package:notee/src/features/note/presentation/screens/edit_task_screen.dart';
 import 'package:notee/src/features/note/presentation/widgets/alert_dialog_widget.dart';
-import 'package:notee/src/features/note/presentation/todo_state_notifier.dart';
+import 'package:notee/src/features/note/presentation/widgets/dismissable_theming.dart';
 import 'package:notee/src/features/note/presentation/widgets/task_widget.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -17,9 +19,9 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool checkBoxValue = true;
+
   @override
   Widget build(BuildContext context) {
-    final isarService = TODOService();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -60,57 +62,78 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Consumer(builder: (context, ref, child) {
-               final todos = ref.watch(allNotesProvider);
+            child: Consumer(
+              builder: (context, ref, child) {
+                final todos = ref.watch(allNotesProvider);
                 return todos.when(
                   data: (data) => ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, index) {
                       final todo = data[index];
-                      return TaskWidget(
-                        taskTitle: todo.title,
-                        taskDescription: todo.description,
-                        isTaskComplete: todo.isTaskCompleted,
-                        onToggled: () async {
-                          ref.read(todoServiceProvider).deleteTODO(todo.id);
-                          ref.read(todoStateNotifierProvider.notifier).addCompletedTask(todo);
-                        },
+                      return Dismissible(
+                        key: Key(todo.id.toString()),
+                        background: slideRightBackground(),
+                        secondaryBackground: slideLeftBackground(),
+                        confirmDismiss: (direction) =>
+                            _confirmDismiss(direction, todo, ref),
+                        child: TaskWidget(
+                          taskTitle: todo.title,
+                          taskDescription: todo.description,
+                        ),
                       );
                     },
                   ),
-                  error: (error, stackTrace) => Text('Error: $error'),
-                  loading: () => const Center(child: CircularProgressIndicator()));
-            },),
-          //     child: StreamBuilder(
-          //   stream: isarService.listenTODO(),
-          //   builder: (context, snapshot) {
-          //     return snapshot.hasData
-          //         ? ListView.builder(
-          //             itemCount: snapshot.data?.length,
-          //             itemBuilder: (context, index) {
-          //               var todo = snapshot.data?[index];
-          //               return TaskWidget(
-          //                 taskTitle: todo!.title,
-          //                 taskDescription: todo.description,
-          //                 isTaskComplete: todo.isTaskCompleted,
-          //                 onToggled: () async {
-          //                   ref.read(todoServiceProvider).deleteTODO(todo.id);
-          //                   ref
-          //                       .read(todoStateNotifierProvider.notifier)
-          //                       .addCompletedTask(todo);
-          //                 },
-          //               );
-          //             },
-          //           )
-          //         : SizedBox(
-          //             height: 250,
-          //             width: 250,
-          //             child: SvgPicture.asset('assets/images/blank.svg'));
-          //   },
-          // ))
-          )
+                  error: (error, stackTrace) =>
+                      Center(child: Text('Error: $error')),
+                  loading: () => const Center(
+                      child: CircularProgressIndicator(color: Colors.blue)),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Future<bool?> _confirmDismiss(
+      DismissDirection direction, Task todo, WidgetRef ref) async {
+    if (direction == DismissDirection.endToStart) {
+      final bool? res = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: const Text("Do you want to mark this task as complete?"),
+            actions: <Widget>[
+              TextButton(
+                child:
+                    const Text("Cancel", style: TextStyle(color: Colors.black)),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: const Text("Sure", style: TextStyle(color: Colors.red)),
+                onPressed: () {
+                  ref.read(todoServiceProvider).deleteTODO(todo.id);
+                  ref
+                      .read(todoStateNotifierProvider.notifier)
+                      .addCompletedTask(todo);
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return res ?? false;
+    } else {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return EditTaskScreen(task: todo);
+        },
+      ));
+    }
+    return null;
   }
 }

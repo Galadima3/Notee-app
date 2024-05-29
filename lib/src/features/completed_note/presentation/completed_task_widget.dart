@@ -27,18 +27,10 @@ class _CompletedTaskWidgetState extends State<CompletedTaskWidget> {
       child: CheckboxListTile(
           title: Text(
             widget.taskTitle,
-            style: TextStyle(
-              decoration: widget.isTaskComplete ?? false
-                  ? TextDecoration.none
-                  : TextDecoration.lineThrough,
-            ),
           ),
-          subtitle: Text(widget.taskDescription,
-              style: TextStyle(
-                decoration: widget.isTaskComplete ?? false
-                    ? TextDecoration.none
-                    : TextDecoration.lineThrough,
-              )),
+          subtitle: Text(
+            widget.taskDescription,
+          ),
           controlAffinity: ListTileControlAffinity.leading,
           value: widget.isTaskComplete,
           onChanged: (bool? value) async {

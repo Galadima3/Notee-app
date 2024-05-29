@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notee/src/features/note/data/note_service.dart';
-import 'package:notee/src/features/note/domain/note.dart';
+import 'package:notee/src/features/note/domain/task.dart';
 
 class TaskInputDialog extends StatefulWidget {
   const TaskInputDialog({super.key});
@@ -23,7 +23,7 @@ class _TaskInputDialogState extends State<TaskInputDialog> {
       //   'description': _description,
       //   'time': _selectedTime,
       // };
-      final taskData = Note(
+      final taskData = Task(
           title: _task,
           description: _description,
           time: _selectedTime,

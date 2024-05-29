@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:notee/src/features/note/domain/note.dart';
+import 'package:notee/src/features/note/domain/task.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:isar/isar.dart';
 
@@ -10,25 +10,27 @@ class TODOService {
     db = openDB();
   }
   //Create
-  Future<void> createTODO(Note note) async {
+  Future<void> createTODO(Task task) async {
     final isar = await db;
-    isar.writeTxnSync(() => isar.notes.putSync(note));
+    isar.writeTxnSync(() => isar.tasks.putSync(task));
   }
 
   //Read
-  Future<List<Note>> getAllTODO() async {
+  Future<List<Task>> getAllTODO() async {
     final isar = await db;
     //Find all users in the user collection and return the list.
-    var rex = await isar.notes.where().findAll();
+    var rex = await isar.tasks.where().findAll();
     return rex;
   }
 
   //Update
-  Future<void> updateTODO(Note note) async {
+  Future<void> updateTODO(Task task) async {
     final isar = await db;
+
+    
     await isar.writeTxn(() async {
       //Perform a write transaction to update the user in the database.
-      await isar.notes.put(note);
+      await isar.tasks.put(task);
     });
   }
 
@@ -39,16 +41,16 @@ class TODOService {
     //Perform a write transaction to delete the user with the specified ID.
     Future.delayed(const Duration(seconds: 3)).then(
       (_) => isar.writeTxn(
-        () => isar.notes.delete(todoID),
+        () => isar.tasks.delete(todoID),
       ),
     );
   }
 
   //Listen to changes in the user collection and yield a stream of user lists.
-  Stream<List<Note>> listenTODO() async* {
+  Stream<List<Task>> listenTODO() async* {
     final isar = await db;
     //Watch the user collection for changes and yield the updated user list.
-    yield* isar.notes.where().watch(fireImmediately: true);
+    yield* isar.tasks.where().watch(fireImmediately: true);
   }
 
   Future<Isar> openDB() async {
@@ -57,7 +59,7 @@ class TODOService {
     if (Isar.instanceNames.isEmpty) {
       return await Isar.open(
         //open isar
-        [NoteSchema],
+        [TaskSchema],
         directory: dir.path,
         // user.g.dart includes the schemes that we need to define here - it can be multiple.
       );
@@ -71,7 +73,7 @@ final todoServiceProvider = Provider<TODOService>((ref) {
   return TODOService();
 });
 
-final allNotesProvider = StreamProvider<List<Note>>((ref) async* {
+final allNotesProvider = StreamProvider<List<Task>>((ref) async* {
   final todosService = ref.read(todoServiceProvider);
   yield* todosService.listenTODO();
 });
